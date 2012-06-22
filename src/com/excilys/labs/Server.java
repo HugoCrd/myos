@@ -5,8 +5,8 @@ import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.http.RouteMatcher;
 import org.vertx.java.deploy.Verticle;
 
-import com.excilys.labs.recipe.Ingredient;
-import com.excilys.labs.recipe.Recipe;
+import com.excilys.labs.model.Ingredient;
+import com.excilys.labs.model.Recipe;
 
 public class Server extends Verticle {
 	static Recipe recipe = new Recipe();
