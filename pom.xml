@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.excilys.labs</groupId>
+	<artifactId>Vertx_myos</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.vertx</groupId>
+			<artifactId>platform</artifactId>
+			<version>1.0.1.final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.vertx</groupId>
+			<artifactId>core</artifactId>
+			<version>1.0.1.final</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vertx</groupId>
+				<artifactId>vertx-maven-plugin</artifactId>
+				<version>1.0.2-RELEASE</version>
+				<configuration>
+					<verticleName>com.excilys.labs.Server</verticleName>
+					<vertxHomeDirectory>/home/zorro/Dev/vert.x/bin</vertxHomeDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+
+</project>

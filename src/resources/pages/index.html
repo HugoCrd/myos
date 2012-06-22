@@ -1,0 +1,172 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Make your own soup</title>
+
+		<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+		<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+		<!-- Styles --> 
+		<link type="text/css" href="css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
+		<link href="bootstrap/bootstrap.css" rel="stylesheet">
+		<style>
+			body{
+				width:1000px;
+				margin:auto;
+				margin-top:0px;
+				padding-top:50px;
+				background-color: #eee;
+			}
+			#ingredientChooser{
+				width:400px;
+				float: left;
+				
+			}
+			#ingredientChooser label{	
+				float: left;
+				width: 120px;
+				font-weight: bold;
+				padding-left: 20px;
+			}
+			#ingredientChooser .slider{
+				margin-left: 150px;
+			}
+			.row{
+				margin-bottom: 8px;
+				margin-top: 8px;
+			}
+			#recipeTable{
+				float: right;
+				width: 400px;
+			}
+			#recipeTable label{	
+				float: left;
+				width: 120px;
+				font-weight: bold;
+				padding-left: 20px;
+			}
+			#progressBarContainer {
+				width:100px;
+				heigth:60px;
+			}
+		</style>
+	</head>
+
+	<body>
+		  <!--[if IE]>
+	  <link rel="stylesheet" type="text/css" href="css/custom-theme/jquery.ui.1.8.16.ie.css"/>
+	  <![endif]-->
+
+		<div class="topbar">
+			<div class="fill">
+				<div class="container">
+					<a class="brand">Make your own soup</a>
+				</div>
+			</div>
+		</div>
+		<div id="progressBarContainer"><div id="progressbar"></div></div>
+		
+		<div id="ingredientChooser">
+			<h3>Pick what you want</h3>
+		</div>
+		<div id="recipeTable">
+			<h3>What's in your soup ?</h3>	
+		</div>
+	</body>
+
+	<!--scripts-->
+	<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+	<script>
+	
+		$(document).ready(function () {
+			$.getJSON('recipe.json', function(data) {
+				feedRecipe(data);
+			});
+			$.getJSON('availableIngredients.json', function(data) {
+				stopProgressbar();
+				feedSliders(data);
+			});
+		});
+		
+		var shouldStopProgressbar = false;
+	
+		var pGress = function() {
+			var pVal = $('#progressbar').progressbar('option', 'value');
+			var pCnt = !isNaN(pVal) ? (pVal + 10) : 1;
+			if (pCnt > 100) {
+				pCnt=1;
+			} else {
+				$('#progressbar').progressbar({value: pCnt});
+			}
+		}
+		
+		var startProgressbar = function(){
+			$('#progressbar').progressbar({value: 0});
+			var tholder=0;
+			do{
+				setTimeout(pGress,5);
+				tholder++;
+			}while(shouldStopProgressbar!=true && tholder<100);
+			shouldStopProgressbar = false;
+		}
+		
+		var stopProgressbar = function(){
+			shouldStopProgressbar = true;
+			$('#progressbar').progressbar({value: 0});
+		}
+		
+		var feedSliders = function(ingredients){
+			var items = [];
+			$.each(ingredients, function(key, val) {
+				var row = "";
+				row += "<div class=\"row\">";
+				row += "<label for=\""+key+"\">"+key+"</label>";
+				row += "<div class=\"slider\" id=\""+key+"\"></div>";
+				row += "</div class=\"row\">";
+				items.push(row);
+			});
+			$('#ingredientChooser').empty().append("<h3>Pick what you want</h3>").append(items.join(''));
+			initSliders(ingredients);
+		}
+		
+		var feedRecipe = function(ingredients){
+			var ingredientsTab = [];
+			$.each(ingredients, function(name, quantity) {
+				var row = "";
+				row += "<div class=\"row\">";
+				row += "<label>"+name+"</label>";
+				row += quantity;
+				row += "</div>";
+				ingredientsTab.push(row);
+			});
+			$('#recipeTable').empty().append("<h3>What's in your soup ?</h3>").append(ingredientsTab.join(''));
+		}
+		
+		var initSliders = function(ingredients){
+			
+			$.each(ingredients, function(key, val) {
+				$("#"+key).slider({
+					range: "min",
+					min: 0,
+					max: 100,
+					value: parseInt(val),
+					stop:function (event, ui) {
+						startProgressbar();
+						var uri = "set/"+$(this).attr("id")+"/"+ui.value;
+						$.getJSON(uri,function(recipe) {
+							stopProgressbar();
+							feedRecipe(recipe);
+						});
+					}
+				});
+			});
+			
+		}
+		
+		
+		
+	</script>
+</html>
