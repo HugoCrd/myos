@@ -1,0 +1,4 @@
+Myos - Make your own soup
+Demo app using Vert.x and mongoDB
+
+This project uses vertx-maven-plugin, please follow these instructions to set it up : https://github.com/rhart/vertx-maven-plugin/blob/master/README.md
