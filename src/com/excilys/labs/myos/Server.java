@@ -9,9 +9,9 @@ import com.excilys.labs.myos.model.Ingredient;
 import com.excilys.labs.myos.model.Recipe;
 
 public class Server extends Verticle {
-	static Recipe recipe = new Recipe();
 	public void start() {
 
+		final Recipe recipe = new Recipe();
 		RouteMatcher rm = new RouteMatcher();
 
 		rm.get("/set/:ingredient/:quantity", new Handler<HttpServerRequest>() {
