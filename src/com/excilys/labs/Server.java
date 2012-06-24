@@ -40,13 +40,13 @@ public class Server extends Verticle {
 
 		rm.get(".+.(css|js|png)", new Handler<HttpServerRequest>() {
 			public void handle(HttpServerRequest req) {
-				req.response.sendFile("src/resources" + req.path);
+				req.response.sendFile("resources" + req.path);
 			}
 		});
 
 		rm.getWithRegEx(".*", new Handler<HttpServerRequest>() {
 			public void handle(HttpServerRequest req) {
-				req.response.sendFile("src/resources/pages/index.html");
+				req.response.sendFile("resources/pages/index.html");
 			}
 		});
 
