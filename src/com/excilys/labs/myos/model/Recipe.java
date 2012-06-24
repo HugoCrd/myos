@@ -1,4 +1,4 @@
-package com.excilys.labs.model;
+package com.excilys.labs.myos.model;
 
 import java.util.HashMap;
 import java.util.Map;

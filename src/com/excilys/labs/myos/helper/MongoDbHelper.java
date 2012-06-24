@@ -1,4 +1,4 @@
-package com.excilys.labs.helper;
+package com.excilys.labs.myos.helper;
 
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.eventbus.EventBus;

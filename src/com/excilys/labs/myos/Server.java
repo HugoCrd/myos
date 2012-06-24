@@ -1,12 +1,12 @@
-package com.excilys.labs;
+package com.excilys.labs.myos;
 
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.http.RouteMatcher;
 import org.vertx.java.deploy.Verticle;
 
-import com.excilys.labs.model.Ingredient;
-import com.excilys.labs.model.Recipe;
+import com.excilys.labs.myos.model.Ingredient;
+import com.excilys.labs.myos.model.Recipe;
 
 public class Server extends Verticle {
 	static Recipe recipe = new Recipe();
