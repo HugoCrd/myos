@@ -33,18 +33,27 @@ public class RecipeDao {
 		}
 
 		final JsonObject newIngredient = new JsonObject();
-		newIngredient.putString("ingredient", ingredient.toString());
-		newIngredient.putNumber("quantity", quantity);
+		newIngredient.putNumber(ingredient.toString(), quantity);
 
 		MongoDbHelper.findFromSession("myos", new Handler<Message<JsonObject>>() {
 
 			public void handle(Message<JsonObject> msg) {
 				JsonObject response = msg.body;
 				if ("ok".equals(response.getString("status"))) {
-					final JsonObject ingredients = response.getObject("result").getObject("ingredients").mergeIn(newIngredient);
-
+					final JsonObject ingredients;
+					if(response.getObject("result")!=null){
+						System.out.println("----Bililip  "+response.getObject("result"));
+						ingredients = response.getObject("result").getObject("myos").mergeIn(newIngredient);
+					}else{
+						ingredients = newIngredient;
+					}
+						
 					MongoDbHelper.saveOrUpdateIntoSession("myos", ingredients, new Handler<Message<JsonObject>>() {
-						public void handle(Message<JsonObject> arg0) {
+						public void handle(Message<JsonObject> msg) {
+							JsonObject response = msg.body;
+							System.out.println("RECEIVED : "+response.encode());
+							if(response.getString("_id")!=null)
+								req.response.headers().put("Set-Cookie", "sessionid="+response.getString("_id"));
 							req.response.end(ingredients.encode());
 						}
 					}, sessionid, eventBus);
@@ -54,13 +63,17 @@ public class RecipeDao {
 	}
 
 	public void getIngredientsAsJson(final String sessionid, final HttpServerRequest req) {
+		if(sessionid==null){
+			req.response.end("{}");
+			return;
+		}
 		MongoDbHelper.findFromSession("myos", new Handler<Message<JsonObject>>() {
 
 			public void handle(Message<JsonObject> msg) {
 				JsonObject response = msg.body;
 
 				if ("ok".equals(response.getString("status"))) {
-					final JsonObject ingredients = response.getObject("result").getObject("ingredients");
+					final JsonObject ingredients = response.getObject("result").getObject("myos");
 					req.response.end(ingredients.encode());
 				}
 			}
@@ -69,13 +82,17 @@ public class RecipeDao {
 	}
 	
 	public void getAvailableIngredientsAsJson(final String sessionid, final HttpServerRequest req){
+		if(sessionid==null){
+			req.response.end(Ingredient.getAsJson().encode());
+			return;
+		}
 		MongoDbHelper.findFromSession("myos", new Handler<Message<JsonObject>>() {
 
 			public void handle(Message<JsonObject> msg) {
 				JsonObject response = msg.body;
 
 				if ("ok".equals(response.getString("status"))) {
-					final JsonObject ingredients = response.getObject("result").getObject("ingredients");
+					final JsonObject ingredients = response.getObject("result").getObject("myos");
 					req.response.end(Ingredient.getAsJson().mergeIn(ingredients).encode());
 				}
 			}

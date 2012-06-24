@@ -20,17 +20,24 @@ public class MongoDbHelper {
 			
 			public void handle(Message<JsonObject> msg) {
 
+				JsonObject response = msg.body;
+				
+				System.out.println("RECEIVED : "+response.encode());
+
 				JsonObject jsonKey = json;
 				JsonObject jsonQuery = new JsonObject();
 				
-				if ("ok".equals(msg.body.getString("status")) && msg.body.getObject("result") != null){
-					jsonKey = json.mergeIn(msg.body.getObject("result").getObject(key));
+				if ("ok".equals(response.getString("status")) && response.getObject("result") != null){
+					jsonKey = json.mergeIn(response.getObject("result").getObject(key));
 				}
-				if(sessionid!=null && !sessionid.isEmpty())
-					jsonQuery.putString("_id", sessionid);
 				jsonQuery.putString("action", "save");
 				jsonQuery.putString("collection", "session");
-				jsonQuery.putObject("document", new JsonObject().putObject(key, jsonKey));
+				JsonObject innerDocument = new JsonObject().putObject(key, jsonKey);
+				if(sessionid!=null && !sessionid.isEmpty())
+					innerDocument.putString("_id", sessionid);
+				jsonQuery.putObject("document", innerDocument);
+
+				System.out.println("SENT : "+jsonQuery.encode());
 
 				eventBus.send("vertx.mongopersistor", jsonQuery, callback);
 			}
@@ -44,6 +51,7 @@ public class MongoDbHelper {
 		jsonQuery.putString("action", "findone");
 		jsonQuery.putString("collection", "session");
 		jsonQuery.putObject("matcher", new JsonObject().putString("_id", sessionid));
+		System.out.println("SENT : "+jsonQuery.encode());
 		eventBus.send("vertx.mongopersistor", jsonQuery, callback);
 	}
 

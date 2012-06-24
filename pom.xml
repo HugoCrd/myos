@@ -25,6 +25,7 @@
 				<version>1.0.2-RELEASE</version>
 				<configuration>
 					<verticleName>com.excilys.labs.myos.Server</verticleName>
+					<vertxHomeDirectory>/home/zorro/Dev/vert.x/</vertxHomeDirectory>
 				</configuration>
 			</plugin>
 		</plugins>

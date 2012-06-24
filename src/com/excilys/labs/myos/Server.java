@@ -3,6 +3,7 @@ package com.excilys.labs.myos;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.http.RouteMatcher;
+import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.deploy.Verticle;
 
 import com.excilys.labs.myos.dao.RecipeDao;
@@ -11,6 +12,9 @@ import com.excilys.labs.myos.helper.CookieHelper;
 public class Server extends Verticle {
 	
 	public void start() {
+		
+		this.container.deployVerticle("mongo-persistor", new JsonObject(
+				"{\"address\": \"vertx.mongopersistor\",\"host\": \"127.0.0.1\",\"port\": 27017,\"db_name\": \"test\"}"));
 
 		final RecipeDao recipeDao = new RecipeDao(this.getVertx().eventBus());
 		final RouteMatcher rm = new RouteMatcher();
@@ -32,7 +36,7 @@ public class Server extends Verticle {
 		rm.get("/availableIngredients.json", new Handler<HttpServerRequest>() {
 			public void handle(HttpServerRequest req) {
 				String sessionid = CookieHelper.getSessionid(req.headers());
-				recipeDao.getIngredientsAsJson(sessionid, req);
+				recipeDao.getAvailableIngredientsAsJson(sessionid, req);
 			}
 		});
 
