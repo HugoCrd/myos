@@ -11,6 +11,7 @@
 		<!-- Styles --> 
 		<link type="text/css" href="css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
 		<link href="bootstrap/bootstrap.css" rel="stylesheet">
+		<link href='http://fonts.googleapis.com/css?family=Just+Me+Again+Down+Here' rel='stylesheet' type='text/css'>
 		<style>
 			body{
 				width:1000px;
@@ -20,7 +21,7 @@
 				background-color: #eee;
 			}
 			#ingredientChooser{
-				width:400px;
+				width:500px;
 				float: left;
 				
 			}
@@ -41,11 +42,10 @@
 				float: right;
 				width: 400px;
 			}
-			#recipeTable label{	
-				float: left;
-				width: 120px;
-				font-weight: bold;
-				padding-left: 20px;
+			#recipeTable .row{
+				font-family: 'Just Me Again Down Here', cursive;
+				font-size:20px;
+				padding-left: 70px;
 			}
 			#progressBarContainer {
 				width:100px;
@@ -123,7 +123,7 @@
 			$.each(ingredients, function(key, val) {
 				var row = "";
 				row += "<div class=\"row\">";
-				row += "<label for=\""+key+"\">"+key+"</label>";
+				row += "<label for=\""+key+"\">"+ucfirst(key)+"</label>";
 				row += "<div class=\"slider\" id=\""+key+"\"></div>";
 				row += "</div class=\"row\">";
 				items.push(row);
@@ -135,12 +135,14 @@
 		var feedRecipe = function(ingredients){
 			var ingredientsTab = [];
 			$.each(ingredients, function(name, quantity) {
-				var row = "";
-				row += "<div class=\"row\">";
-				row += "<label>"+name+"</label>";
-				row += quantity;
-				row += "</div>";
-				ingredientsTab.push(row);
+				if(parseInt(quantity)>0){
+					var row = "";
+					row += "<div class=\"row\">";
+					row += quantity;
+					row += " "+name;
+					row += "</div>";
+					ingredientsTab.push(row);
+				}
 			});
 			$('#recipeTable').empty().append("<h3>What's in your soup ?</h3>").append(ingredientsTab.join(''));
 		}
@@ -165,6 +167,15 @@
 			});
 			
 		}
+		
+		var ucfirst = function(str){
+	          str=str.toLowerCase();
+	          return str.replace(/(\b)([a-zA-Z])/,
+	                   function(firstLetter){
+	                      return   firstLetter.toUpperCase();
+	                   });
+	     }
+
 		
 		
 		
