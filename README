@@ -7,7 +7,7 @@ Requirements :
   - Specify 'vertxHomeDirectory' option in pom.xml
   - Install and run MongoDB
 
-To run it with maven, follow these instructions to set it up : 
+To run it with maven, follow these instructions : 
 https://github.com/rhart/vertx-maven-plugin/blob/master/README.md
 Then, use 'mvn vertx:run' to run the project
 
