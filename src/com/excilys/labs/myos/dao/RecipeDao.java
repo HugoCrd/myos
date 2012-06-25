@@ -42,7 +42,7 @@ public class RecipeDao {
 				if ("ok".equals(response.getString("status"))) {
 					final JsonObject ingredients;
 					if(response.getObject("result")!=null){
-						ingredients = Ingredient.getAsJson().mergeIn(response.getObject("result").getObject("myos").mergeIn(newIngredient));
+						ingredients = response.getObject("result").getObject("myos").mergeIn(newIngredient);
 					}else{
 						ingredients = newIngredient;
 					}
