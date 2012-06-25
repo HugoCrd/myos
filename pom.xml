@@ -25,6 +25,8 @@
 				<version>1.0.2-RELEASE</version>
 				<configuration>
 					<verticleName>com.excilys.labs.myos.Server</verticleName>
+					<!-- Change this option to your own vert.x install folder -->
+					<!-- Yes, I named my session Zorro -->
 					<vertxHomeDirectory>/home/zorro/Dev/vert.x/</vertxHomeDirectory>
 				</configuration>
 			</plugin>
