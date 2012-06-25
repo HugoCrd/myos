@@ -1,4 +1,7 @@
-Myos - Make your own soup
-Demo app using Vert.x and mongoDB
+Myos - Make Your Own Soup
+Demo app using Vert.x and MongoDB
 
 This project uses vertx-maven-plugin, please follow these instructions to set it up : https://github.com/rhart/vertx-maven-plugin/blob/master/README.md
+
+As myos-0.1.1 uses mongo-persistor busmod, you'll need a local Vert.x installed and have to specify 'vertxHomeDirectory' option in pom.xml. 
+I hope vertx-maven-plugin will do that in the future.
