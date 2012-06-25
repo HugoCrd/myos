@@ -6,18 +6,13 @@ import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.json.JsonObject;
 
+import com.excilys.labs.myos.helper.CookieHelper;
 import com.excilys.labs.myos.helper.MongoDbHelper;
 import com.excilys.labs.myos.model.Ingredient;
 
 public class RecipeDao {
 
-	private EventBus eventBus;
-
-	public RecipeDao(EventBus eventBus) {
-		this.eventBus = eventBus;
-	}
-
-	public void setSomeOf(String ingredientString, String quantityString, final String sessionid, final HttpServerRequest req) {
+	public static void setSomeOf(String ingredientString, String quantityString, final String sessionid, final HttpServerRequest req, final EventBus eventBus) {
 
 		Ingredient ingredient;
 		Integer quantity;
@@ -51,8 +46,8 @@ public class RecipeDao {
 						public void handle(Message<JsonObject> msg) {
 							JsonObject response = msg.body;
 							if(response.getString("_id")!=null)
-								req.response.headers().put("Set-Cookie", "sessionid="+response.getString("_id")+"; Expires=Tue, 15 Jan 2013 20:00:00 GMT; Path=/; Domain=localhost");
-							req.response.end(ingredients.encode());
+								CookieHelper.setSessionid(response.getString("_id"), req);
+								req.response.end(ingredients.encode());
 						}
 					}, sessionid, eventBus);
 				}
@@ -60,7 +55,7 @@ public class RecipeDao {
 		}, sessionid, eventBus);
 	}
 
-	public void getIngredientsAsJson(final String sessionid, final HttpServerRequest req) {
+	public static void getIngredientsAsJson(final String sessionid, final HttpServerRequest req, final EventBus eventBus) {
 		if(sessionid==null){
 			req.response.end("{}");
 			return;
@@ -79,7 +74,7 @@ public class RecipeDao {
 		}, sessionid, eventBus);
 	}
 	
-	public void getAvailableIngredientsAsJson(final String sessionid, final HttpServerRequest req){
+	public static void getAvailableIngredientsAsJson(final String sessionid, final HttpServerRequest req, final EventBus eventBus){
 		if(sessionid==null){
 			req.response.end(Ingredient.getAsJson().encode());
 			return;

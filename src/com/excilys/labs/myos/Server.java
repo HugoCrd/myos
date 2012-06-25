@@ -1,6 +1,7 @@
 package com.excilys.labs.myos;
 
 import org.vertx.java.core.Handler;
+import org.vertx.java.core.eventbus.EventBus;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.http.RouteMatcher;
 import org.vertx.java.core.json.JsonObject;
@@ -13,30 +14,35 @@ public class Server extends Verticle {
 	
 	public void start() {
 		
-		this.container.deployVerticle("mongo-persistor", new JsonObject(
-				"{\"address\": \"vertx.mongopersistor\",\"host\": \"127.0.0.1\",\"port\": 27017,\"db_name\": \"test\"}"));
+		JsonObject mongoConf = new JsonObject();
+		mongoConf.putString("address", "vertx.mongopersistor");
+		mongoConf.putString("host", "127.0.0.1");
+		mongoConf.putNumber("port", 27017);
+		mongoConf.putString("db_name", "test");
 
-		final RecipeDao recipeDao = new RecipeDao(this.getVertx().eventBus());
+		this.container.deployVerticle("mongo-persistor", mongoConf);
+
+		final EventBus eventBus = this.getVertx().eventBus();
 		final RouteMatcher rm = new RouteMatcher();
 
 		rm.get("/set/:ingredient/:quantity", new Handler<HttpServerRequest>() {
 			public void handle(final HttpServerRequest req) {
 				String sessionid = CookieHelper.getSessionid(req.headers());
-				recipeDao.setSomeOf(req.params().get("ingredient"), req.params().get("quantity"), sessionid, req);
+				RecipeDao.setSomeOf(req.params().get("ingredient"), req.params().get("quantity"), sessionid, req, eventBus);
 			}
 		});
 
 		rm.get("/recipe.json", new Handler<HttpServerRequest>() {
 			public void handle(HttpServerRequest req) {
 				String sessionid = CookieHelper.getSessionid(req.headers());
-				recipeDao.getIngredientsAsJson(sessionid, req);
+				RecipeDao.getIngredientsAsJson(sessionid, req, eventBus);
 			}
 		});
 
 		rm.get("/availableIngredients.json", new Handler<HttpServerRequest>() {
 			public void handle(HttpServerRequest req) {
 				String sessionid = CookieHelper.getSessionid(req.headers());
-				recipeDao.getAvailableIngredientsAsJson(sessionid, req);
+				RecipeDao.getAvailableIngredientsAsJson(sessionid, req, eventBus);
 			}
 		});
 
