@@ -42,8 +42,7 @@ public class RecipeDao {
 				if ("ok".equals(response.getString("status"))) {
 					final JsonObject ingredients;
 					if(response.getObject("result")!=null){
-						System.out.println("----Bililip  "+response.getObject("result"));
-						ingredients = response.getObject("result").getObject("myos").mergeIn(newIngredient);
+						ingredients = Ingredient.getAsJson().mergeIn(response.getObject("result").getObject("myos").mergeIn(newIngredient));
 					}else{
 						ingredients = newIngredient;
 					}
@@ -51,9 +50,8 @@ public class RecipeDao {
 					MongoDbHelper.saveOrUpdateIntoSession("myos", ingredients, new Handler<Message<JsonObject>>() {
 						public void handle(Message<JsonObject> msg) {
 							JsonObject response = msg.body;
-							System.out.println("RECEIVED : "+response.encode());
 							if(response.getString("_id")!=null)
-								req.response.headers().put("Set-Cookie", "sessionid="+response.getString("_id"));
+								req.response.headers().put("Set-Cookie", "sessionid="+response.getString("_id")+"; Expires=Tue, 15 Jan 2013 20:00:00 GMT; Path=/; Domain=localhost");
 							req.response.end(ingredients.encode());
 						}
 					}, sessionid, eventBus);
