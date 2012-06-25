@@ -14,7 +14,7 @@ Then, use 'mvn vertx:run' to run the project
 
 
 ---
-Note : Running myos without rebuild it :
+Note : Running myos without rebuilding it :
 ~$ cd myos
 myos$ vertx run com.excilys.labs.myos.Server -cp target/classes/
 ---
