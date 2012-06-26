@@ -1,18 +1,15 @@
 package com.excilys.labs.myos.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.vertx.java.core.json.JsonObject;
 
 public enum Ingredient {
 	 OGNON, GARLIC, CARROT, WINE, BUTTER ,PORK;
 	 
 	 public static JsonObject getAsJson() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		 JsonObject json = new JsonObject();
 			for(Ingredient ingredient : values()){
-				map.put(ingredient.toString(), 0f);
+				json.putNumber(ingredient.toString(), 0);
 			}
-		return new JsonObject(map);
+		return json;
 	}
 }
