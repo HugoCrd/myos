@@ -47,9 +47,8 @@
 				font-size:20px;
 				padding-left: 70px;
 			}
-			#progressBarContainer {
-				width:100px;
-				heigth:60px;
+			#loadingDotContainer{
+				display: inline-block;
 			}
 		</style>
 	</head>
@@ -66,7 +65,8 @@
 				</div>
 			</div>
 		</div>
-		<div id="progressBarContainer"><div id="progressbar"></div></div>
+		
+		<div id="loadingDotContainer"></div>
 		
 		<div id="ingredientChooser">
 			<h3>Pick what you want</h3>
@@ -82,40 +82,26 @@
 	<script>
 	
 		$(document).ready(function () {
+			startLoadingDot();
 			$.getJSON('recipe.json', function(data) {
 				feedRecipe(data);
 			});
 			$.getJSON('availableIngredients.json', function(data) {
-				stopProgressbar();
+				stopLoadingDot();
 				feedSliders(data);
 			});
 		});
 		
-		var shouldStopProgressbar = false;
-	
-		var pGress = function() {
-			var pVal = $('#progressbar').progressbar('option', 'value');
-			var pCnt = !isNaN(pVal) ? (pVal + 10) : 1;
-			if (pCnt > 100) {
-				pCnt=1;
-			} else {
-				$('#progressbar').progressbar({value: pCnt});
-			}
+		var startLoadingDot = function(element){
+			$('#loadingDotContainer').empty().append("<li></li>");
+			setInterval(function(){
+				$('#loadingDotContainer li').fadeIn(500);
+				$('#loadingDotContainer li').fadeOut(500);
+			},1000);
 		}
 		
-		var startProgressbar = function(){
-			$('#progressbar').progressbar({value: 0});
-			var tholder=0;
-			do{
-				setTimeout(pGress,5);
-				tholder++;
-			}while(shouldStopProgressbar!=true && tholder<100);
-			shouldStopProgressbar = false;
-		}
-		
-		var stopProgressbar = function(){
-			shouldStopProgressbar = true;
-			$('#progressbar').progressbar({value: 0});
+		var stopLoadingDot = function(){
+			$('#loadingDotContainer').empty();
 		}
 		
 		var feedSliders = function(ingredients){
@@ -156,16 +142,15 @@
 					max: 20,
 					value: parseInt(val),
 					stop:function (event, ui) {
-						startProgressbar();
+						startLoadingDot();
 						var uri = "set/"+$(this).attr("id")+"/"+ui.value;
 						$.getJSON(uri,function(recipe) {
-							stopProgressbar();
+							stopLoadingDot();
 							feedRecipe(recipe);
 						});
 					}
 				});
 			});
-			
 		}
 		
 		var ucfirst = function(str){
@@ -173,11 +158,8 @@
 	          return str.replace(/(\b)([a-zA-Z])/,
 	                   function(firstLetter){
 	                      return   firstLetter.toUpperCase();
-	                   });
+	                   }
+	          );
 	     }
-
-		
-		
-		
 	</script>
 </html>
