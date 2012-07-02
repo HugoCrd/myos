@@ -20,7 +20,7 @@ public class Server extends Verticle {
 		mongoConf.putNumber("port", 27017);
 		mongoConf.putString("db_name", "test");
 
-		this.container.deployVerticle("mongo-persistor", mongoConf);
+		this.container.deployWorkerVerticle("mongo-persistor", mongoConf);
 
 		final EventBus eventBus = this.getVertx().eventBus();
 		final RouteMatcher rm = new RouteMatcher();
